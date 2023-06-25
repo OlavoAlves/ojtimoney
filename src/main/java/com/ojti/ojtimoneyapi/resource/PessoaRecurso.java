@@ -1,7 +1,5 @@
 package com.ojti.ojtimoneyapi.resource;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -17,34 +15,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ojti.ojtimoneyapi.event.RecursoCriadoEvent;
-import com.ojti.ojtimoneyapi.model.Categoria;
-import com.ojti.ojtimoneyapi.repository.CategoriasRepositorio;
+import com.ojti.ojtimoneyapi.model.Pessoa;
+import com.ojti.ojtimoneyapi.repository.PessoasRepositorio;
 
 @RestController
-@RequestMapping("/categorias")
-public class CategoriaRecurso {
+@RequestMapping("/pessoas")
+public class PessoaRecurso {
 
     @Autowired
-    private CategoriasRepositorio categoriaRepository;
+    private PessoasRepositorio pessoaRepository;
 
     @Autowired
     private ApplicationEventPublisher publisher;
 
-    @GetMapping
-    public List<Categoria> listar() {
-        return categoriaRepository.findAll();
-    }
-
     @PostMapping
-    public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
-        Categoria categoriaSalva = categoriaRepository.save(categoria);
-        publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+    public ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
+        Pessoa pessoaSalva = pessoaRepository.save(pessoa);
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
     }
-
     @GetMapping("/{codigo}")
-    public Categoria buscarPeloCodigo(@PathVariable Long codigo) {
-        return this.categoriaRepository.findById(codigo).orElse(null);
+    public Pessoa buscarPeloCodigo(@PathVariable Long codigo) {
+        return this.pessoaRepository.findById(codigo).orElse(null);
     }
-
 }
